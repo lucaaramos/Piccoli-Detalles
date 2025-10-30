@@ -8,8 +8,19 @@ const productSchema = new mongoose.Schema(
     imageUrl: { type: String },
     category: { type: String },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+      transform: (doc, ret) => {
+        ret.id = ret._id.toString(); // agrega "id" legible
+        delete ret._id;              // oculta "_id"
+        delete ret.__v;              // oculta "__v"
+      },
+    },
+  }
 );
 
+// Exportar el modelo
 const Product = mongoose.model("Product", productSchema);
 export default Product;
