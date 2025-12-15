@@ -9,12 +9,14 @@ export const loginUser = async (req, res) => {
     if (!email || !password)
       return res.status(400).json({ error: "Faltan datos" });
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
     if (!user) return res.status(404).json({ error: "Usuario no encontrado" });
 
-    // const isMatch = await bcrypt.compare(password, user.password);
-    const isValidPassword = await password === user.password;
-    if(!isValidPassword) res.status(401).json("Incorrect password")
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    // const isValidPassword = await password === user.password;
+    if(!isValidPassword){
+      return res.status(401).json("Incorrect password")
+    } 
     console.log(password)
     console.log(user.password)
 
