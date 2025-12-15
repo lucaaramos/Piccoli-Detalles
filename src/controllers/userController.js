@@ -9,19 +9,24 @@ export const loginUser = async (req, res) => {
     if (!email || !password)
       return res.status(400).json({ error: "Faltan datos" });
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
     if (!user) return res.status(404).json({ error: "Usuario no encontrado" });
 
-    // const isMatch = await bcrypt.compare(password, user.password);
-    const isValidPassword = await password === user.password;
-    if(!isValidPassword) res.status(401).json("Incorrect password")
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    // const isValidPassword = await password === user.password;
+    if(!isValidPassword){
+      return res.status(401).json("Incorrect password")
+    } 
     console.log(password)
     console.log(user.password)
 
     // if (!isValidPassword) return res.status(401).json({ error: "Contraseña incorrecta" });
 
     const token = jwt.sign(
-      { id: user.id, email: user.email },
+      { id: user.id, 
+        email: user.email,
+        role: user.role
+       },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
@@ -71,9 +76,9 @@ export const createUser = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, last_name, email, password } = req.body;
+    const { name, last_name, email, password, role } = req.body;
 
-    const updateData = { name, last_name, email };
+    const updateData = { name, last_name, email, role };
     if (password) {
       const salt = await bcrypt.genSalt(10);
       updateData.password = await bcrypt.hash(password, salt);

@@ -5,8 +5,20 @@ const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     last_name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+    password: { type: String, required: true, select: false },
+    role: {
+      type: String,
+      enum: ["admin", "user"],
+      default: "user"
+     
+    }
   },
   {
     timestamps: true,
@@ -16,19 +28,20 @@ const userSchema = new mongoose.Schema(
         ret.id = ret._id.toString();
         delete ret._id;
         delete ret.__v;
-        // delete ret.password;
+        delete ret.password;
       },
     },
   }
 );
 
-// Hashear contraseña antes de guardar
-// userSchema.pre("save", async function (next) {
-//   if (!this.isModified("password")) return next();
-//   const salt = await bcrypt.genSalt(10);
-//   this.password = await bcrypt.hash(this.password, salt);
-//   next();
-// });
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+
+  next();
+});
 
 const User = mongoose.model("User", userSchema);
 export default User;
