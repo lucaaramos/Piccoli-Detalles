@@ -12,7 +12,7 @@ export const getProducts = async (req, res) => {
 
 export const createProduct = async (req, res) => {
   try {
-    const { name, price, description, imageURL } = req.body;
+    const { name, price, description, imageURL, stock } = req.body;
 
     if (!name || !price) {
       return res.status(400).json({ error: "El nombre y el precio son obligatorios" });
@@ -22,7 +22,8 @@ export const createProduct = async (req, res) => {
       name,
       price,
       description: description || "",
-      imageURL: imageURL || ""
+      imageURL: imageURL || "",
+      stock,
     });
 
     const savedProduct = await newProduct.save();
@@ -36,11 +37,11 @@ export const createProduct = async (req, res) => {
 export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, price, description, imageURL } = req.body;
+    const { name, price, description, imageURL, stock } = req.body;
 
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
-      { name, price, description, imageURL },
+      { name, price, description, imageURL, stock },
       { new: true, runValidators: true }
     );
 
