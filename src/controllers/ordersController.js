@@ -100,3 +100,42 @@ export const cancelOrder = async (req,res) => {
 
     res.json({message: "Order cancelled"})
 }
+
+export const payOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    const order = await Orders.findById(id);
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    if (
+      order.user.toString() !== userId &&
+      req.user.role !== "admin"
+    ) {
+      return res.status(403).json({ error: "Not authorized" });
+    }
+
+    if (order.status !== "pending") {
+      return res.status(400).json({
+        error: "Only pending orders can be paid",
+      });
+    }
+
+    order.status = "paid";
+    order.paidAt = new Date();
+
+    await order.save();
+
+    res.json({
+      message: "Order paid successfully",
+      order,
+    });
+  } catch (error) {
+    console.error("Error paying order:", error.message);
+    res.status(500).json({ error: "Server Error" });
+  }
+};
