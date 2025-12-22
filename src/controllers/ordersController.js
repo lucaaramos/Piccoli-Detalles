@@ -139,3 +139,35 @@ export const payOrder = async (req, res) => {
     res.status(500).json({ error: "Server Error" });
   }
 };
+
+export const shipOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const order = await Orders.findById(id);
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    if (order.status !== "paid") {
+      return res.status(400).json({
+        error: "Only paid orders can be shipped",
+      });
+    }
+
+    order.status = "shipped";
+    order.shippedAt = new Date();
+
+    await order.save();
+
+    res.status(200).json({
+      message: "Order shipped successfully",
+      order 
+    });
+
+  } catch (error) {
+    console.error("Error shipping order:", error.message);
+    res.status(500).json({ error: "Server Error" });
+  }
+}
