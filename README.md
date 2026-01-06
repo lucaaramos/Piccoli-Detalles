@@ -1,4 +1,4 @@
-# 🛒 Ecommerce Backend API
+# Ecommerce Backend API
 
 E-commerce backend built with **Node.js**, **Express**, and **MongoDB**, focused on backend best practices, data validation, and clean architecture.
 
@@ -6,7 +6,7 @@ The project includes authentication, product management, order processing, stock
 
 ---
 
-## 🚀 Features
+## Features
 
 - JWT-based authentication
 - User management with roles (`admin / user`)
@@ -21,7 +21,7 @@ The project includes authentication, product management, order processing, stock
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Node.js**
 - **Express**
@@ -33,7 +33,7 @@ The project includes authentication, product management, order processing, stock
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 src/
 ├── controllers/ # Business logic
@@ -49,7 +49,7 @@ src/
 
 ---
 
-## 🔐 Authentication & Roles
+## Authentication & Roles
 
 - JWT-based authentication
 - `VerifyToken` middleware to protect routes
@@ -57,7 +57,7 @@ src/
 
 ---
 
-## ✅ Request Validation
+## Request Validation
 
 A dedicated **request validation layer** was implemented using **Zod**, validating:
 
@@ -74,38 +74,40 @@ Examples:
 
 ---
 
-## 🧾 Main Endpoints
+## Main Endpoints
 
-### 🔑 Auth
-POST /api/login
-
-
-### 👤 Users
-GET /api/users (admin)
-POST /api/users
-PUT /api/users/:id
-DELETE /api/users/:id (admin)
+### Auth
+- POST /api/login
 
 
-### 📦 Products
-GET /api/products
-POST /api/products
-PUT /api/products/:id
-DELETE /api/products/:id
+### Users
+- GET /api/users (admin)
+- POST /api/users
+- PUT /api/users/:id
+- DELETE /api/users/:id (admin)
 
 
-### 🛒 Orders
-POST /api/orders
-GET /api/orders/my/:id
-GET /api/orders (admin)
-PATCH /api/orders/:id/pay
-PATCH /api/orders/:id/ship (admin)
-POST /api/cancel-order/:id
+### Products
+- GET /api/products
+- POST /api/products
+- PUT /api/products/:id
+- DELETE /api/products/:id
+
+
+### Orders
+- POST   /api/orders
+- GET    /api/orders/my/:id
+- GET    /api/orders           (admin)
+- PATCH  /api/orders/:id/pay
+- PATCH  /api/orders/:id/ship  (admin)
+- POST   /api/cancel-order/:id
+
+
 
 
 ---
 
-## 🧠 Order Creation Flow
+## Order Creation Flow
 
 1. Client sends products and quantities
 2. Request is validated using Zod
@@ -115,8 +117,24 @@ POST /api/cancel-order/:id
 6. Order is created with `pending` status
 
 ---
+## Database Seed (Demo Data)
 
-## ⚙️ Environment Variables
+To make the project easy to test, seed scripts are included to populate the database with demo data.
+
+Seeded data includes:
+
+Users (admin & regular user)
+
+Products
+
+Orders linked to users and products
+
+Run seed:
+npm run seed
+
+
+
+##  Environment Variables
 
 Create a `.env` file based on `.env.example`:
 
@@ -125,10 +143,23 @@ PORT=4000
 MONGO_URI=mongodb://localhost/piccoli
 JWT_SECRET=your_secret_key
 
-## Running the project
+## Install dependencies:
 npm install
+
+##Seed the database (optional but recommended):
+npm run seed
+
+## Run in development mode:
 npm run dev
 
 
 ## Server will be avaliable at: 
 http://localhost:4000
+
+## Notes
+
+The backend calculates totals and validates stock to prevent client-side manipulation
+
+Designed following real-world backend patterns
+
+Suitable as a portfolio project or as a base for a real e-commerce application
