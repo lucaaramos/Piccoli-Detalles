@@ -5,48 +5,59 @@ import Product from "../models/Product.js";
 export const createOrder = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { products } = req.validated;
+    const { items } = req.body;
 
-    if (!products || products.length === 0) {
+    if (!items || items.length === 0) {
       return res.status(400).json({ error: "Empty order" });
     }
 
     let total = 0;
-    const items = [];
+    const orderItems = [];
 
-    for (const p of products) {
+    for (const item of items) {
+      if (!item.productId || !item.quantity || item.quantity <= 0) {
+        return res.status(400).json({ error: "Invalid order item" });
+      }
+
       const product = await Product.findOneAndUpdate(
-        { _id: p.productId, stock: { $gte: p.quantity } },
-        { $inc: { stock: -p.quantity } },
+        {
+          _id: item.productId,
+          stock: { $gte: item.quantity },
+        },
+        {
+          $inc: { stock: -item.quantity },
+        },
         { new: true }
       );
 
       if (!product) {
-        return res.status(400).json({ error: "Product not found or insufficient stock" });
+        return res.status(400).json({
+          error: "Product not found or insufficient stock",
+        });
       }
 
-      total += product.price * p.quantity;
+      total += product.price * item.quantity;
 
-      items.push({
+      orderItems.push({
         product: product._id,
         name: product.name,
         price: product.price,
-        quantity: p.quantity
+        quantity: item.quantity,
       });
     }
 
-    const order = new Order({
+    const order = new Orders({
       user: userId,
-      items,
+      items: orderItems,
       total,
-      status: "pending"
+      status: "pending",
     });
 
     const savedOrder = await order.save();
 
     res.status(201).json({
       message: "Order created successfully",
-      order: savedOrder
+      order: savedOrder,
     });
   } catch (error) {
     console.error("Error creating order:", error.message);
