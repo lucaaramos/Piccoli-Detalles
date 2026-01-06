@@ -16,5 +16,5 @@ app.use("/api",
 );
 
 app.get("/", (req, res) => {
-  res.send("Bienvenido a la API de Piccoli Detalles");
+  res.send("Bienvenido a la API");
 });
