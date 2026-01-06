@@ -1,15 +1,31 @@
 {
-  "name": "piccoli",
+  "name": "piccoli-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "type": "module",
+  "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "seed": "node src/seed/seed.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "keywords": [
+    "nodejs",
+    "express",
+    "mongodb",
+    "mongoose",
+    "ecommerce",
+    "api",
+    "backend",
+    "rest",
+    "jwt",
+    "zod"
+  ],
+  "author": "Luca Ramos",
+  "license": "MIT",
+  "description": "REST API for an e-commerce platform built with Node.js, Express and MongoDB. Includes authentication, product management and order lifecycle.",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
