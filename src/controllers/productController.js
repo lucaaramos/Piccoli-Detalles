@@ -25,6 +25,7 @@ export const createProduct = async (req, res) => {
       imageURL: imageURL || "",
       stock,
     });
+    console.log(newProduct);
 
     const savedProduct = await newProduct.save();
     res.status(201).json(savedProduct);
