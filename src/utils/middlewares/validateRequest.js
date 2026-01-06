@@ -9,7 +9,7 @@ export const validateRequest = (schema, property = "body") => {
       });
     }
 
-    req.validated = result.data; // 👈 ESTA LÍNEA ES LA CLAVE
+    req.validated = result.data;
     next();
   };
 };
