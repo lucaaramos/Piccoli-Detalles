@@ -4,7 +4,7 @@ E-commerce backend built with **Node.js**, **Express**, and **MongoDB**, focused
 
 The project includes authentication, product management, order processing, stock control, and order status handling, and is designed to be ready for future payment gateway integrations.
 
----
+
 
 ## Features
 
@@ -19,7 +19,7 @@ The project includes authentication, product management, order processing, stock
 - Consistent error handling
 - Modular and scalable architecture
 
----
+
 
 ## Tech Stack
 
@@ -31,23 +31,7 @@ The project includes authentication, product management, order processing, stock
 - **JWT** (authentication)
 - **dotenv**
 
----
 
-## Project Structure
-
-src/
-├── controllers/ # Business logic
-├── routes/ # API endpoints
-├── models/ # Mongoose models
-├── utils/
-│ ├── middlewares/ # Auth, validation, roles
-│ └── validators/ # Zod schemas
-├── config/ # App configuration
-├── app.js # Express app
-└── server.js # Entry point
-
-
----
 
 ## Authentication & Roles
 
@@ -55,7 +39,7 @@ src/
 - `VerifyToken` middleware to protect routes
 - `isAdmin` middleware for restricted actions
 
----
+
 
 ## Request Validation
 
@@ -72,7 +56,7 @@ Examples:
 - Order creation validation
 - MongoDB ObjectId validation
 
----
+
 
 ## Main Endpoints
 
@@ -105,7 +89,7 @@ Examples:
 
 
 
----
+
 
 ## Order Creation Flow
 
@@ -116,7 +100,7 @@ Examples:
 5. Total amount is calculated on the backend
 6. Order is created with `pending` status
 
----
+
 ## Database Seed (Demo Data)
 
 To make the project easy to test, seed scripts are included to populate the database with demo data.
@@ -132,7 +116,83 @@ Orders linked to users and products
 Run seed:
 npm run seed
 
+Default seeded users:
 
+admin@demo.com
+ / 123456
+
+user@demo.com
+ / 123456
+
+ # API Design Decisions
+
+- Orders calculate totals on the backend to prevent client-side manipulation
+
+- Stock is updated atomically when an order is created
+
+- Role-based access control is enforced at the route level
+
+- Validation is executed before controllers to keep business logic clean
+
+- MongoDB ObjectId validation is centralized and reusable
+
+
+# Error Handling Strategy
+
+- Centralized validation errors using Zod
+
+- Consistent HTTP status codes
+
+- Clear error messages for client-side handling
+
+- Early returns to avoid unnecessary database operations
+
+
+# Authentication Flow
+
+- User logs in with email and password
+
+- Server validates credentials
+
+- JWT is generated and returned
+
+- Client sends JWT in Authorization header
+
+- Protected routes verify token and user role
+
+
+# How to Test the API
+
+Recommended tools:
+
+- Postman
+
+- Insomnia
+
+# Steps:
+
+- Run the seed script
+
+- Login using seeded credentials
+
+- Use the returned JWT to access protected routes
+
+- Create products and orders
+
+- Test role-restricted endpoints using admin user
+
+
+## Future Improvements
+
+- Payment gateway integration (MercadoPago / Stripe)
+
+- Pagination and filtering for products and orders
+
+- Order history and tracking
+
+- Unit and integration testing
+
+- Docker support
 
 ##  Environment Variables
 
@@ -143,23 +203,24 @@ PORT=4000
 MONGO_URI=mongodb://localhost/piccoli
 JWT_SECRET=your_secret_key
 
-## Install dependencies:
+Install dependencies:
 npm install
 
-##Seed the database (optional but recommended):
+Seed the database (optional but recommended):
 npm run seed
 
-## Run in development mode:
+Run in development mode:
 npm run dev
 
 
-## Server will be avaliable at: 
+Server will be avaliable at: 
 http://localhost:4000
 
-## Notes
+Notes
 
 The backend calculates totals and validates stock to prevent client-side manipulation
 
 Designed following real-world backend patterns
 
 Suitable as a portfolio project or as a base for a real e-commerce application
+
