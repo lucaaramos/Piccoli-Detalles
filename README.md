@@ -87,9 +87,88 @@ Examples:
 - POST   /api/cancel-order/:id
 
 
+## Pagination & Filtering
+
+The GET /api/products endpoint supports pagination, sorting, and advanced filtering via query parameters.
+All query params are validated using Zod to ensure type safety and prevent invalid queries from reaching the database.
+
+| Query param | Type   | Default | Description              |
+| ----------- | ------ | ------- | ------------------------ |
+| `page`      | number | `1`     | Page number              |
+| `limit`     | number | `10`    | Items per page (max 100) |
+
+Example 
+GET /api/products?page=2&limit=5
+
+| Query param | Values                       | Default     | Description      |
+| ----------- | ---------------------------- | ----------- | ---------------- |
+| `sort`      | `createdAt`, `price`, `name` | `createdAt` | Field to sort by |
+| `order`     | `asc`, `desc`                | `desc`      | Sort order       |
+
+Example
+GET /api/products?sort=price&order=asc
+
+## Filters
+
+## Text Search
+
+Search products by name (case-insensitive):
+GET /api/products?search=candle 
+
+## Price Range
+Filter products by price range: 
+GET /api/products?minPrice=1000&maxPrice=5000:
+
+## Stock Availability
+Return only products with stock available:
+GET /api/products?inStock=true
+
+## Date range(Creation Date)
+Filter products by creation date:
+GET /api/products?startDate=2024-01-01&endDate=2024-12-31
 
 
+## Combined Filter Example
+All filters can be combined in a single request:
+GET /api/products?
+  search=soap&
+  minPrice=2000&
+  maxPrice=6000&
+  inStock=true&
+  startDate=2024-01-01&
+  endDate=2024-12-31&
+  page=1&
+  limit=10&
+  sort=price&
+  order=asc
 
+## Paginated Response Format
+
+{
+  "data": [ ...products ],
+  "meta": {
+    "page": 1,
+    "limit": 10,
+    "totalItems": 25,
+    "totalPages": 3,
+    "hasNextPage": true,
+    "hasPrevPage": false
+  }
+}
+
+## Validation Strategy
+
+All query parameters are validated using Zod, including:
+
+Pagination boundaries
+
+Numeric filters
+
+Date parsing and validation
+
+Allowed sort fields and order values
+
+Validated data is attached to req.validated, ensuring that controllers only work with trusted, well-typed input.
 
 ## Order Creation Flow
 
