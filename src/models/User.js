@@ -16,9 +16,8 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: ["admin", "user"],
-      default: "user"
-     
-    }
+      default: "user",
+    },
   },
   {
     timestamps: true,
@@ -34,12 +33,15 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+userSchema.index({ email: 1 });              
+userSchema.index({ role: 1 });               
+userSchema.index({ createdAt: -1 });         
+
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
-
   next();
 });
 
