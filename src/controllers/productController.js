@@ -3,26 +3,67 @@ import { getPagination } from "../utils/pagination.js";
 
 export const getProducts = async (req, res, next) => {
   try {
-    const { page, limit, skip } = getPagination(req.query)
+    const {
+      page,
+      limit,
+      search,
+      minPrice,
+      maxPrice,
+      inStock,
+      sort,
+      order,
+      startDate,
+      endDate
+    } = req.validated;
 
-    const [products, total] = await Promise.all([
-      Product.find().skip(skip).limit(limit),
-      Product.countDocuments()
-    ])
+    const filters = {};
+
+    if (search) {
+      filters.name = { $regex: search, $options: "i" };
+    }
+
+    if (minPrice !== undefined || maxPrice !== undefined) {
+      filters.price = {};
+      if (minPrice !== undefined) filters.price.$gte = minPrice;
+      if (maxPrice !== undefined) filters.price.$lte = maxPrice;
+    }
+
+    if (inStock === "true") {
+      filters.stock = { $gt: 0 };
+    }
+
+    if (startDate || endDate) {
+      filters.createdAt = {};
+      if (startDate) filters.createdAt.$gte = startDate;
+      if (endDate) filters.createdAt.$lte = endDate;
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [products, totalItems] = await Promise.all([
+      Product.find(filters)
+        .sort({ [sort]: order === "asc" ? 1 : -1 })
+        .skip(skip)
+        .limit(limit),
+      Product.countDocuments(filters)
+    ]);
 
     res.json({
       data: products,
-      pagination: {
+      meta: {
         page,
         limit,
-        total,
-        totalPages: Math.ceil(total / limit)
+        totalItems,
+        totalPages: Math.ceil(totalItems / limit),
+        hasNextPage: skip + products.length < totalItems,
+        hasPrevPage: page > 1
       }
-    })
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
+
 
 
 export const createProduct = async (req, res) => {
