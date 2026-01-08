@@ -1,14 +1,29 @@
 import Product from "../models/Product.js";
+import { getPagination } from "../utils/pagination.js";
 
-export const getProducts = async (req, res) => {
+export const getProducts = async (req, res, next) => {
   try {
-    const products = await Product.find();
-    res.json(products);
+    const { page, limit, skip } = getPagination(req.query)
+
+    const [products, total] = await Promise.all([
+      Product.find().skip(skip).limit(limit),
+      Product.countDocuments()
+    ])
+
+    res.json({
+      data: products,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+      }
+    })
   } catch (error) {
-    console.error("Error al obtener productos:", error.message);
-    res.status(500).json({ error: "Error del servidor" });  
+    next(error)
   }
-};
+}
+
 
 export const createProduct = async (req, res) => {
   try {
