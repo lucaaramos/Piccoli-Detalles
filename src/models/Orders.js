@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
   {
@@ -36,12 +36,10 @@ const orderSchema = new mongoose.Schema(
       enum: ["pending", "paid", "shipped", "cancelled"],
       default: "pending",
     },
-    shippedAt: {
-      type: Date,
-    },
-    paidAt: {
-      type: Date,
-    },
+
+    shippedAt: Date,
+    paidAt: Date,
+
     paymentMethod: {
       type: String,
       default: "mock",
@@ -50,6 +48,9 @@ const orderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+orderSchema.index({ user: 1 });             
+orderSchema.index({ status: 1 });           
+orderSchema.index({ createdAt: -1 });       
 
 const Order = mongoose.model("Order", orderSchema);
 export default Order;
