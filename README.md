@@ -273,6 +273,19 @@ Recommended tools:
 
 - Docker support
 
+## Execute tests
+
+Run all test suites with:
+
+```bash
+NODE_ENV=test npm test
+Output: 
+PASS  tests/product.test.js
+PASS  tests/orders.test.js
+PASS  tests/users.test.js
+
+
+
 ##  Environment Variables
 
 Create a `.env` file based on `.env.example`:
