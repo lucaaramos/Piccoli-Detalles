@@ -23,10 +23,10 @@ const productSchema = new mongoose.Schema(
 );
 
 /* Indexes */
-productSchema.index({ name: 1 });          
-productSchema.index({ price: 1 });         
-productSchema.index({ stock: 1 });         
-productSchema.index({ createdAt: -1 });    
+productSchema.index({ createdAt: -1 });
+productSchema.index({ price: 1, stock: 1, createdAt: -1 });
+productSchema.index({ name: "text" });
+   
 
 const Product = mongoose.model("Product", productSchema);
 export default Product;
